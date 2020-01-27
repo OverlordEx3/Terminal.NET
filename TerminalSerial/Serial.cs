@@ -98,6 +98,21 @@ namespace TerminalSerial
             return recv;
         }
 
+        new public int Read(byte[] buffer, int offset, int count)
+        {
+            int read = 0;
+            try
+            {
+                read = base.Read(buffer, offset, count);
+            } catch( TimeoutException timeout)
+            {
+                read = 0;
+            }
+            
+            Received += read;
+            return read;
+        }
+
         public async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellation)
         {
             int recv = 0;
@@ -139,14 +154,14 @@ namespace TerminalSerial
             DataReceivedDelegate = dataReceivedDelegate;
         }
 
-        public async void TerminalSerialReadThead(object arg)
+        public  void TerminalSerialReadThead(object arg)
         {
             CancellationToken cancellationToken = (CancellationToken)arg;
             byte[] rcvBuf = new byte[4096];
 
             while(cancellationToken.IsCancellationRequested == false)
             {
-                int read = await port.ReadAsync(rcvBuf, 0, rcvBuf.Length, cancellationToken);
+                int read = port.Read(rcvBuf, 0, rcvBuf.Length);
                 if(read > 0)
                 {
                     if(DataReceivedDelegate != null)

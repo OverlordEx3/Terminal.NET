@@ -168,6 +168,8 @@ namespace TerminalSerial
                     {
                         DataReceivedDelegate(new TerminalSerialDataEventArgs { BytesRead = read, DataRead = rcvBuf }) ; 
                     }
+                    /* Give time to process */
+                    Thread.Sleep(50);
                 }
             }
         }

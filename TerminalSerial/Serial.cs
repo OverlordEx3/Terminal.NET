@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
+using PropertyChanged;
 
 namespace TerminalSerial
 {
+    [AddINotifyPropertyChangedInterface]
     public class Serial : SerialPort
     {
         public int Received { get; set; } = 0;

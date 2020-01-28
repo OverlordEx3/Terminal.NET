@@ -19,7 +19,7 @@ namespace Terminal
         private bool ShowAscii = true;
 
 
-        private  Dictionary<String, Parity> parityDictionary = new Dictionary<string, Parity>()
+        private Dictionary<String, Parity> parityDictionary = new Dictionary<string, Parity>()
         {
             {"None", Parity.None },
             {"Odd", Parity.Odd},
@@ -80,17 +80,19 @@ namespace Terminal
             this.Serial = new Serial();
 
             this.comPortCb.Items.AddRange(SerialPort.GetPortNames());
-            if(this.comPortCb.Items.Count > 0)
+            if (this.comPortCb.Items.Count > 0)
             {
                 this.comPortCb.SelectedIndex = 0;
                 this.connectBtn.Enabled = true;
             }
 
-            this.receivedQtyLb.DataBindings.Add("Text", this.Serial, "Received");
+            this.receivedQtyLb.DataBindings.Add("Text", Serial, "Received");
             this.receivedTSSL.Text = "0";
             this.transmitedTSSL.Text = "0";
 
             Serial.ReceivedDelegate = OnSerialDataArrived;
+
+            PropertyChangedNotificationInterceptor.UIContext = System.Threading.SynchronizationContext.Current;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -123,7 +125,7 @@ namespace Terminal
             {
                 if (rb.Checked == true)
                 {
-                    if(rb.Name == "customRb")
+                    if (rb.Name == "customRb")
                     {
                         baudrate = int.Parse(this.customBrTb.Text);
                         break;
@@ -183,11 +185,12 @@ namespace Terminal
             try
             {
                 Serial.Open();
-                if(Serial.IsOpen == true)
+                if (Serial.IsOpen == true)
                 {
                     connStatusTSSL.Text = "Connected";
                 }
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
 
             }
@@ -208,10 +211,11 @@ namespace Terminal
 
         private void connectBtn_Click(object sender, EventArgs e)
         {
-            if(Serial.IsOpen)
+            if (Serial.IsOpen)
             {
                 handleDisconnection();
-            } else
+            }
+            else
             {
                 handleConnection();
             }
@@ -222,15 +226,16 @@ namespace Terminal
             int baudrate = 0;
             RadioButton rb = (RadioButton)sender;
 
-            if(rb.Name == "customRb")
+            if (rb.Name == "customRb")
             {
                 baudrate = int.Parse(this.customBrTb.Text);
-            } else
+            }
+            else
             {
                 baudrate = int.Parse(rb.Text);
             }
 
-            if(Serial.BaudRate == baudrate)
+            if (Serial.BaudRate == baudrate)
             {
                 return;
             }
@@ -322,7 +327,7 @@ namespace Terminal
 
         private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(Serial.IsOpen == false)
+            if (Serial.IsOpen == false)
             {
                 return;
             }
@@ -338,7 +343,8 @@ namespace Terminal
                 {
                     receivedTb.Text += Encoding.ASCII.GetString(args.DataRead, 0, args.BytesRead);
                 }));
-            } catch( Exception ex)
+            }
+            catch (Exception ex)
             {
 
             }

@@ -10,12 +10,14 @@ using System.Windows.Forms;
 using TerminalSerial;
 using System.IO.Ports;
 using System.IO;
+using Terminal.BindableComponents;
 
 namespace Terminal
 {
     public partial class Form1 : Form
     {
         private Serial Serial;
+        private UpdatableFields miscData = new UpdatableFields();
         private bool ShowAscii = true;
 
 
@@ -77,6 +79,7 @@ namespace Terminal
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            BindableToolStripLabel bindableToolStripLabel;
             this.Serial = new Serial();
 
             this.comPortCb.Items.AddRange(SerialPort.GetPortNames());
@@ -86,9 +89,39 @@ namespace Terminal
                 this.connectBtn.Enabled = true;
             }
 
-            this.receivedQtyLb.DataBindings.Add("Text", Serial, "Received");
-            this.receivedTSSL.Text = "0";
-            this.transmitedTSSL.Text = "0";
+            /* Bind items */
+            /* Status text */
+            bindableToolStripLabel = new BindableToolStripLabel();
+            bindableToolStripLabel.DataBindings.Add(new Binding("Text", miscData, "ErrorString"));
+            statusStrip1.Items.Add(bindableToolStripLabel);
+
+            /* Split */
+            bindableToolStripLabel = new BindableToolStripLabel();
+            bindableToolStripLabel.Text = "|";
+            statusStrip1.Items.Add(bindableToolStripLabel);
+
+            /* Rx */
+            bindableToolStripLabel = new BindableToolStripLabel();
+            bindableToolStripLabel.Text = "RX: ";
+            statusStrip1.Items.Add(bindableToolStripLabel);
+            bindableToolStripLabel = new BindableToolStripLabel();
+            bindableToolStripLabel.DataBindings.Add(new Binding("Text", Serial, "Received"));
+            statusStrip1.Items.Add(bindableToolStripLabel);
+
+            /* Split */
+            bindableToolStripLabel = new BindableToolStripLabel();
+            bindableToolStripLabel.Text = "|";
+            statusStrip1.Items.Add(bindableToolStripLabel);
+
+            /* Tx */
+            bindableToolStripLabel = new BindableToolStripLabel();
+            bindableToolStripLabel.Text = "TX: ";
+            statusStrip1.Items.Add(bindableToolStripLabel);
+            bindableToolStripLabel = new BindableToolStripLabel();
+            bindableToolStripLabel.DataBindings.Add(new Binding("Text", Serial, "Sent"));
+            statusStrip1.Items.Add(bindableToolStripLabel);
+
+            receivedQtyLb.DataBindings.Add("Text", Serial, "Received");
 
             Serial.ReceivedDelegate = OnSerialDataArrived;
 
@@ -187,7 +220,7 @@ namespace Terminal
                 Serial.Open();
                 if (Serial.IsOpen == true)
                 {
-                    connStatusTSSL.Text = "Connected";
+                    miscData.ErrorString = "Connected";
                 }
             }
             catch (Exception ex)
@@ -203,7 +236,7 @@ namespace Terminal
         private void handleDisconnection()
         {
             Serial.Close();
-            connStatusTSSL.Text = "";
+            miscData.ErrorString = "";
             connectBtn.Text = "Connect";
             reScanBtn.Enabled = true;
             comPortCb.Enabled = true;

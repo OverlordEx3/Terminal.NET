@@ -80,14 +80,20 @@ namespace Terminal
         private void Form1_Load(object sender, EventArgs e)
         {
             BindableToolStripLabel bindableToolStripLabel;
-            this.Serial = new Serial();
+            Serial = new Serial();
 
-            this.comPortCb.Items.AddRange(SerialPort.GetPortNames());
-            if (this.comPortCb.Items.Count > 0)
+            comPortCb.Items.AddRange(SerialPort.GetPortNames());
+            if (comPortCb.Items.Count > 0)
             {
-                this.comPortCb.SelectedIndex = 0;
-                this.connectBtn.Enabled = true;
+                comPortCb.SelectedIndex = 0;
+                connectBtn.Enabled = true;
             }
+
+            BaudrateCb.SelectedIndex = 3;
+            DatabitCb.SelectedIndex = 3;
+            ParityCb.SelectedIndex = 0;
+            StopbitCb.SelectedIndex = 0;
+            HandshakeCb.SelectedIndex = 0;
 
             /* Bind items */
             /* Status text */
@@ -121,8 +127,6 @@ namespace Terminal
             bindableToolStripLabel.DataBindings.Add(new Binding("Text", Serial, "Sent"));
             statusStrip1.Items.Add(bindableToolStripLabel);
 
-            receivedQtyLb.DataBindings.Add("Text", Serial, "Received");
-
             Serial.ReceivedDelegate = OnSerialDataArrived;
 
             PropertyChangedNotificationInterceptor.UIContext = System.Threading.SynchronizationContext.Current;
@@ -130,7 +134,6 @@ namespace Terminal
 
         private void button2_Click(object sender, EventArgs e)
         {
-            this.reScanBtn.Enabled = false;
             this.connectBtn.Enabled = false;
             this.comPortCb.Enabled = false;
 
@@ -142,7 +145,6 @@ namespace Terminal
                 this.connectBtn.Enabled = true;
             }
 
-            this.reScanBtn.Enabled = true;
             this.comPortCb.Enabled = true;
         }
 
@@ -229,7 +231,6 @@ namespace Terminal
             }
 
             connectBtn.Text = "Disconnect";
-            reScanBtn.Enabled = false;
             comPortCb.Enabled = false;
         }
 
@@ -238,7 +239,6 @@ namespace Terminal
             Serial.Close();
             miscData.ErrorString = "";
             connectBtn.Text = "Connect";
-            reScanBtn.Enabled = true;
             comPortCb.Enabled = true;
         }
 
@@ -386,6 +386,17 @@ namespace Terminal
         private void button6_Click(object sender, EventArgs e)
         {
             receivedTb.Clear();
+        }
+
+        private void comPortCb_DropDown(object sender, EventArgs e)
+        {
+            comPortCb.Items.Clear();
+            comPortCb.Items.AddRange(Serial.GetPortNames());
+            if (comPortCb.Items.Count > 0)
+            {
+                comPortCb.SelectedIndex = 0;
+                connectBtn.Enabled = true;
+            }
         }
     }
 }

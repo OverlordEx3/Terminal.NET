@@ -51,32 +51,6 @@ namespace Terminal
             InitializeComponent();
         }
 
-
-        private void radioButton5_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton11_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton20_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton29_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            System.Windows.Forms.Application.Exit();
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             BindableToolStripLabel bindableToolStripLabel;
@@ -127,96 +101,88 @@ namespace Terminal
             bindableToolStripLabel.DataBindings.Add(new Binding("Text", Serial, "Sent"));
             statusStrip1.Items.Add(bindableToolStripLabel);
 
+            splitContainer1.Panel1MinSize = 150;
+            splitContainer1.Panel2MinSize = 50;
+
             Serial.ReceivedDelegate = OnSerialDataArrived;
 
             PropertyChangedNotificationInterceptor.UIContext = System.Threading.SynchronizationContext.Current;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private int BaudrateFromUI()
         {
-            this.connectBtn.Enabled = false;
-            this.comPortCb.Enabled = false;
+            string textBaudrate;
 
-            this.comPortCb.Items.Clear();
-            this.comPortCb.Items.AddRange(SerialPort.GetPortNames());
-            if (this.comPortCb.Items.Count > 0)
+            /* Is this the last element?*/
+            if (BaudrateCb.SelectedIndex == BaudrateCb.Items.Count)
             {
-                this.comPortCb.SelectedIndex = 0;
-                this.connectBtn.Enabled = true;
+                /* If so, the baudrate is gave by user */
+                textBaudrate = customBrTb.Text;
+            } else
+            {
+                textBaudrate = BaudrateCb.SelectedText;
             }
 
-            this.comPortCb.Enabled = true;
+            if (int.TryParse(textBaudrate, out int baudrate) == false)
+            {
+                /* Fallback baudrate */
+                baudrate = 600;
+            }
+
+            return baudrate;
         }
 
-        private void handleConnection()
+        private int DatabitsFromUI()
         {
-            int baudrate = 600;
-            int databits = 8;
-            Parity parity = Parity.None;
-            Handshake handshake = Handshake.None;
-            StopBits stopBits = StopBits.None;
-
-            foreach (RadioButton rb in this.baudrateGb.Controls)
+            if (int.TryParse(DatabitCb.SelectedText, out int databits) == false)
             {
-                if (rb.Checked == true)
-                {
-                    if (rb.Name == "customRb")
-                    {
-                        baudrate = int.Parse(this.customBrTb.Text);
-                        break;
-                    }
-                    baudrate = int.Parse(rb.Text);
-                    break;
-                }
+                /* Fallback Databits */
+                databits = 8;
             }
 
-            foreach (RadioButton rb in this.databitsCb.Controls)
+            return databits;
+        }
+
+        private Parity ParityFromUI()
+        {
+            if(parityDictionary.TryGetValue(ParityCb.SelectedText, out Parity parity) == false)
             {
-                if (rb.Checked == true)
-                {
-                    databits = int.Parse(rb.Text);
-                    break;
-                }
+                /* Fallback parity */
+                parity = Parity.None;
             }
+            return parity;
+        }
 
-            foreach (RadioButton rb in this.parityGb.Controls)
+        private Handshake HandshakeFromUI()
+        {
+            if (handshakeDictionary.TryGetValue(ParityCb.SelectedText, out Handshake handshake) == false)
             {
-                if (rb.Checked == true)
-                {
-                    parity = parityDictionary[rb.Text];
-                    break;
-                }
+                /* Fallback Handshake */
+                handshake = Handshake.None;
             }
+            return handshake;
+        }
 
-
-            foreach (RadioButton rb in this.stopBitsCb.Controls)
+        private StopBits StopbitsFromUI()
+        {
+            if (stopbitsDictionary.TryGetValue(StopbitCb.SelectedText, out StopBits stopBits) == false)
             {
-                if (rb.Checked == true)
-                {
-                    stopBits = stopbitsDictionary[rb.Text];
-                    break;
-                }
+                /* Fallback Stopbits */
+                stopBits = StopBits.One;
             }
+            return stopBits;
+        }
 
-            foreach (RadioButton rb in this.handShakeGb.Controls)
-            {
-                if (rb.Checked == true)
-                {
-                    handshake = handshakeDictionary[rb.Text];
-                    break;
-                }
-            }
-
+        private void HandleConnection()
+        {
             /* Initialize port options */
-            Serial.BaudRate = baudrate;
-            Serial.DataBits = databits;
-            Serial.Parity = parity;
-            Serial.StopBits = stopBits;
-            Serial.Handshake = handshake;
+            Serial.BaudRate = BaudrateFromUI();
+            Serial.DataBits = DatabitsFromUI();
+            Serial.Parity = ParityFromUI();
+            Serial.StopBits = StopbitsFromUI();
+            Serial.Handshake = HandshakeFromUI();
             Serial.ReadTimeout = 50;
             Serial.PortName = comPortCb.SelectedItem.ToString();
-
-            // FIXME check for errors
             try
             {
                 Serial.Open();
@@ -225,7 +191,7 @@ namespace Terminal
                     miscData.ErrorString = "Connected";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -234,7 +200,7 @@ namespace Terminal
             comPortCb.Enabled = false;
         }
 
-        private void handleDisconnection()
+        private void HandleDisconnection()
         {
             Serial.Close();
             miscData.ErrorString = "";
@@ -242,101 +208,16 @@ namespace Terminal
             comPortCb.Enabled = true;
         }
 
-        private void connectBtn_Click(object sender, EventArgs e)
+        private void ConnectBtn_Click(object sender, EventArgs e)
         {
             if (Serial.IsOpen)
             {
-                handleDisconnection();
+                HandleDisconnection();
             }
             else
             {
-                handleConnection();
+                HandleConnection();
             }
-        }
-
-        private void baudrate_CheckedChanged(object sender, EventArgs e)
-        {
-            int baudrate = 0;
-            RadioButton rb = (RadioButton)sender;
-
-            if (rb.Name == "customRb")
-            {
-                baudrate = int.Parse(this.customBrTb.Text);
-            }
-            else
-            {
-                baudrate = int.Parse(rb.Text);
-            }
-
-            if (Serial.BaudRate == baudrate)
-            {
-                return;
-            }
-
-            Serial.BaudRate = baudrate;
-        }
-
-        private void parity_CheckedChanged(object sender, EventArgs e)
-        {
-            Parity parity = Parity.None;
-
-            RadioButton rb = (RadioButton)sender;
-
-            parity = parityDictionary[rb.Text];
-
-            if (Serial.Parity == parity)
-            {
-                return;
-            }
-
-            Serial.Parity = parity;
-        }
-
-        private void databit_CheckedChanged(object sender, EventArgs e)
-        {
-            int databit = 0;
-            RadioButton rb = (RadioButton)sender;
-
-            databit = int.Parse(rb.Text);
-
-            if (Serial.DataBits == databit)
-            {
-                return;
-            }
-
-            Serial.DataBits = databit;
-        }
-
-        private void stopbit_CheckedChanged(object sender, EventArgs e)
-        {
-            StopBits stopBits = StopBits.None;
-
-            RadioButton rb = (RadioButton)sender;
-
-            stopBits = stopbitsDictionary[rb.Text];
-
-            if (Serial.StopBits == stopBits)
-            {
-                return;
-            }
-
-            Serial.StopBits = stopBits;
-        }
-
-        private void handshake_CheckedChanged(object sender, EventArgs e)
-        {
-            Handshake handshake = Handshake.None;
-
-            RadioButton rb = (RadioButton)sender;
-
-            handshake = handshakeDictionary[rb.Text];
-
-            if (Serial.Handshake == handshake)
-            {
-                return;
-            }
-
-            Serial.Handshake = handshake;
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -348,24 +229,10 @@ namespace Terminal
                     Serial.Close();
                 }
             }
-            catch (IOException ex)
+            catch (IOException)
             {
 
             }
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (Serial.IsOpen == false)
-            {
-                return;
-            }
-
-
         }
 
         private void OnSerialDataArrived(TerminalSerialDataEventArgs args)
@@ -377,18 +244,18 @@ namespace Terminal
                     receivedTb.Text += Encoding.ASCII.GetString(args.DataRead, 0, args.BytesRead);
                 }));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void Button6_Click(object sender, EventArgs e)
         {
             receivedTb.Clear();
         }
 
-        private void comPortCb_DropDown(object sender, EventArgs e)
+        private void ComPortCb_DropDown(object sender, EventArgs e)
         {
             comPortCb.Items.Clear();
             comPortCb.Items.AddRange(Serial.GetPortNames());

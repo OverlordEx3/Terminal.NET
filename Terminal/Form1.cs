@@ -20,7 +20,7 @@ namespace Terminal
         private UpdatableFields miscData = new UpdatableFields();
         private bool ShowAscii = true;
 
-
+        
         private Dictionary<String, Parity> parityDictionary = new Dictionary<string, Parity>()
         {
             {"None", Parity.None },
@@ -35,7 +35,6 @@ namespace Terminal
             {"1", StopBits.One },
             {"1.5", StopBits.OnePointFive },
             {"2", StopBits.Two },
-            {"", StopBits.None }
         };
 
         private Dictionary<String, Handshake> handshakeDictionary = new Dictionary<string, Handshake>()
@@ -62,6 +61,16 @@ namespace Terminal
                 comPortCb.SelectedIndex = 0;
                 connectBtn.Enabled = true;
             }
+
+            ParityCb.DataSource = new BindingSource(parityDictionary, null);
+            ParityCb.DisplayMember = "Key";
+            ParityCb.ValueMember = "Value";
+            StopbitCb.DataSource = new BindingSource(stopbitsDictionary, null);
+            StopbitCb.DisplayMember = "Key";
+            StopbitCb.ValueMember = "Value";
+            HandshakeCb.DataSource = new BindingSource(handshakeDictionary, null);
+            HandshakeCb.DisplayMember = "Key";
+            HandshakeCb.ValueMember = "Value";
 
             BaudrateCb.SelectedIndex = 3;
             DatabitCb.SelectedIndex = 3;

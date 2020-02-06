@@ -19,9 +19,10 @@ namespace Terminal
         private Serial Serial;
         private UpdatableFields miscData = new UpdatableFields();
         private bool ShowAscii = true;
+        private bool isEchoEnabled = false;
 
-
-        private Dictionary<String, Parity> parityDictionary = new Dictionary<string, Parity>()
+        
+        private readonly Dictionary<string, Parity> parityDictionary = new Dictionary<string, Parity>()
         {
             {"None", Parity.None },
             {"Odd", Parity.Odd},
@@ -30,15 +31,14 @@ namespace Terminal
             {"Space", Parity.Space },
         };
 
-        private Dictionary<String, StopBits> stopbitsDictionary = new Dictionary<string, StopBits>()
+        private readonly Dictionary<string, StopBits> stopbitsDictionary = new Dictionary<string, StopBits>()
         {
             {"1", StopBits.One },
             {"1.5", StopBits.OnePointFive },
             {"2", StopBits.Two },
-            {"", StopBits.None }
         };
 
-        private Dictionary<String, Handshake> handshakeDictionary = new Dictionary<string, Handshake>()
+        private readonly Dictionary<string, Handshake> handshakeDictionary = new Dictionary<string, Handshake>()
         {
             {"None", Handshake.None },
             {"RTS/CTS", Handshake.RequestToSend },
@@ -46,52 +46,71 @@ namespace Terminal
             {"RTS/CTS + XON/XOFF", Handshake.RequestToSendXOnXOff }
         };
 
+        private readonly Dictionary<string, int> baudrateDictionary = new Dictionary<string, int>()
+        {
+            {"600", 600 },
+            { "2400", 2400},
+            {"4800", 4800 },
+            {"9600", 9600 },
+            {"19200", 19200 },
+            {"38400", 38400 },
+            {"57600", 57600 },
+            {"115200", 115200 },
+            {"<custom>", 0000 },
+        };
+
+        private readonly Dictionary<string, int> dataBitsDictionary = new Dictionary<string, int>()
+        {
+            { "5", 5},
+            { "6", 6 },
+            { "7", 7 },
+            { "8", 8 },
+        };
+
         public Form1()
         {
             InitializeComponent();
         }
 
-
-        private void radioButton5_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton11_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton20_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton29_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            System.Windows.Forms.Application.Exit();
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             BindableToolStripLabel bindableToolStripLabel;
-            this.Serial = new Serial();
+            Serial = new Serial();
 
-            this.comPortCb.Items.AddRange(SerialPort.GetPortNames());
-            if (this.comPortCb.Items.Count > 0)
+            ComPortUpdateList();
+            comPortCb.DisplayMember = "Key";
+            comPortCb.ValueMember = "Value";
+            if (comPortCb.Items.Count > 0)
             {
-                this.comPortCb.SelectedIndex = 0;
-                this.connectBtn.Enabled = true;
+                comPortCb.SelectedIndex = 0;
+                connectBtn.Enabled = true;
             }
 
+            BaudrateCb.DataSource = new BindingSource(baudrateDictionary, null);
+            BaudrateCb.DisplayMember = "Key";
+            BaudrateCb.ValueMember = "Value";
+            DatabitCb.DataSource = new BindingSource(dataBitsDictionary, null);
+            DatabitCb.DisplayMember = "Key";
+            DatabitCb.ValueMember = "Value";
+            ParityCb.DataSource = new BindingSource(parityDictionary, null);
+            ParityCb.DisplayMember = "Key";
+            ParityCb.ValueMember = "Value";
+            StopbitCb.DataSource = new BindingSource(stopbitsDictionary, null);
+            StopbitCb.DisplayMember = "Key";
+            StopbitCb.ValueMember = "Value";
+            HandshakeCb.DataSource = new BindingSource(handshakeDictionary, null);
+            HandshakeCb.DisplayMember = "Key";
+            HandshakeCb.ValueMember = "Value";
+
+            BaudrateCb.SelectedIndex = 3;
+            DatabitCb.SelectedIndex = 3;
+            ParityCb.SelectedIndex = 0;
+            StopbitCb.SelectedIndex = 0;
+            HandshakeCb.SelectedIndex = 0;
+
             /* Bind items */
-            /* Status text */
-            bindableToolStripLabel = new BindableToolStripLabel();
+        /* Status text */
+        bindableToolStripLabel = new BindableToolStripLabel();
             bindableToolStripLabel.DataBindings.Add(new Binding("Text", miscData, "ErrorString"));
             statusStrip1.Items.Add(bindableToolStripLabel);
 
@@ -121,100 +140,55 @@ namespace Terminal
             bindableToolStripLabel.DataBindings.Add(new Binding("Text", Serial, "Sent"));
             statusStrip1.Items.Add(bindableToolStripLabel);
 
-            receivedQtyLb.DataBindings.Add("Text", Serial, "Received");
+            splitContainer1.Panel1MinSize = 150;
+            splitContainer1.Panel2MinSize = 50;
 
             Serial.ReceivedDelegate = OnSerialDataArrived;
 
             PropertyChangedNotificationInterceptor.UIContext = System.Threading.SynchronizationContext.Current;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private int BaudrateFromUI()
         {
-            this.reScanBtn.Enabled = false;
-            this.connectBtn.Enabled = false;
-            this.comPortCb.Enabled = false;
+            int baudrate = (int)BaudrateCb.SelectedValue;
 
-            this.comPortCb.Items.Clear();
-            this.comPortCb.Items.AddRange(SerialPort.GetPortNames());
-            if (this.comPortCb.Items.Count > 0)
+            if(baudrate == 0)
             {
-                this.comPortCb.SelectedIndex = 0;
-                this.connectBtn.Enabled = true;
+                int.TryParse(customBrTb.Text, out baudrate);
             }
-
-            this.reScanBtn.Enabled = true;
-            this.comPortCb.Enabled = true;
+            return baudrate;
         }
 
-        private void handleConnection()
+        private int DatabitsFromUI()
         {
-            int baudrate = 600;
-            int databits = 8;
-            Parity parity = Parity.None;
-            Handshake handshake = Handshake.None;
-            StopBits stopBits = StopBits.None;
+            return (int)DatabitCb.SelectedValue;
+        }
 
-            foreach (RadioButton rb in this.baudrateGb.Controls)
-            {
-                if (rb.Checked == true)
-                {
-                    if (rb.Name == "customRb")
-                    {
-                        baudrate = int.Parse(this.customBrTb.Text);
-                        break;
-                    }
-                    baudrate = int.Parse(rb.Text);
-                    break;
-                }
-            }
+        private Parity ParityFromUI()
+        {
+            return (Parity)ParityCb.SelectedValue;
+        }
 
-            foreach (RadioButton rb in this.databitsCb.Controls)
-            {
-                if (rb.Checked == true)
-                {
-                    databits = int.Parse(rb.Text);
-                    break;
-                }
-            }
+        private Handshake HandshakeFromUI()
+        {
+            return (Handshake)HandshakeCb.SelectedValue;
+        }
 
-            foreach (RadioButton rb in this.parityGb.Controls)
-            {
-                if (rb.Checked == true)
-                {
-                    parity = parityDictionary[rb.Text];
-                    break;
-                }
-            }
+        private StopBits StopbitsFromUI()
+        {
+            return (StopBits)StopbitCb.SelectedValue;
+        }
 
-
-            foreach (RadioButton rb in this.stopBitsCb.Controls)
-            {
-                if (rb.Checked == true)
-                {
-                    stopBits = stopbitsDictionary[rb.Text];
-                    break;
-                }
-            }
-
-            foreach (RadioButton rb in this.handShakeGb.Controls)
-            {
-                if (rb.Checked == true)
-                {
-                    handshake = handshakeDictionary[rb.Text];
-                    break;
-                }
-            }
-
+        private void HandleConnection()
+        {
             /* Initialize port options */
-            Serial.BaudRate = baudrate;
-            Serial.DataBits = databits;
-            Serial.Parity = parity;
-            Serial.StopBits = stopBits;
-            Serial.Handshake = handshake;
+            Serial.BaudRate = BaudrateFromUI();
+            Serial.DataBits = DatabitsFromUI();
+            Serial.Parity = ParityFromUI();
+            Serial.StopBits = StopbitsFromUI();
+            Serial.Handshake = HandshakeFromUI();
             Serial.ReadTimeout = 50;
-            Serial.PortName = comPortCb.SelectedItem.ToString();
-
-            // FIXME check for errors
+            Serial.PortName = (string)comPortCb.SelectedValue;
             try
             {
                 Serial.Open();
@@ -225,118 +199,31 @@ namespace Terminal
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
 
             connectBtn.Text = "Disconnect";
-            reScanBtn.Enabled = false;
             comPortCb.Enabled = false;
         }
 
-        private void handleDisconnection()
+        private void HandleDisconnection()
         {
             Serial.Close();
             miscData.ErrorString = "";
             connectBtn.Text = "Connect";
-            reScanBtn.Enabled = true;
             comPortCb.Enabled = true;
         }
 
-        private void connectBtn_Click(object sender, EventArgs e)
+        private void ConnectBtn_Click(object sender, EventArgs e)
         {
             if (Serial.IsOpen)
             {
-                handleDisconnection();
+                HandleDisconnection();
             }
             else
             {
-                handleConnection();
+                HandleConnection();
             }
-        }
-
-        private void baudrate_CheckedChanged(object sender, EventArgs e)
-        {
-            int baudrate = 0;
-            RadioButton rb = (RadioButton)sender;
-
-            if (rb.Name == "customRb")
-            {
-                baudrate = int.Parse(this.customBrTb.Text);
-            }
-            else
-            {
-                baudrate = int.Parse(rb.Text);
-            }
-
-            if (Serial.BaudRate == baudrate)
-            {
-                return;
-            }
-
-            Serial.BaudRate = baudrate;
-        }
-
-        private void parity_CheckedChanged(object sender, EventArgs e)
-        {
-            Parity parity = Parity.None;
-
-            RadioButton rb = (RadioButton)sender;
-
-            parity = parityDictionary[rb.Text];
-
-            if (Serial.Parity == parity)
-            {
-                return;
-            }
-
-            Serial.Parity = parity;
-        }
-
-        private void databit_CheckedChanged(object sender, EventArgs e)
-        {
-            int databit = 0;
-            RadioButton rb = (RadioButton)sender;
-
-            databit = int.Parse(rb.Text);
-
-            if (Serial.DataBits == databit)
-            {
-                return;
-            }
-
-            Serial.DataBits = databit;
-        }
-
-        private void stopbit_CheckedChanged(object sender, EventArgs e)
-        {
-            StopBits stopBits = StopBits.None;
-
-            RadioButton rb = (RadioButton)sender;
-
-            stopBits = stopbitsDictionary[rb.Text];
-
-            if (Serial.StopBits == stopBits)
-            {
-                return;
-            }
-
-            Serial.StopBits = stopBits;
-        }
-
-        private void handshake_CheckedChanged(object sender, EventArgs e)
-        {
-            Handshake handshake = Handshake.None;
-
-            RadioButton rb = (RadioButton)sender;
-
-            handshake = handshakeDictionary[rb.Text];
-
-            if (Serial.Handshake == handshake)
-            {
-                return;
-            }
-
-            Serial.Handshake = handshake;
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -348,24 +235,10 @@ namespace Terminal
                     Serial.Close();
                 }
             }
-            catch (IOException ex)
+            catch (IOException)
             {
 
             }
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (Serial.IsOpen == false)
-            {
-                return;
-            }
-
-
         }
 
         private void OnSerialDataArrived(TerminalSerialDataEventArgs args)
@@ -377,15 +250,64 @@ namespace Terminal
                     receivedTb.Text += Encoding.ASCII.GetString(args.DataRead, 0, args.BytesRead);
                 }));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void Button6_Click(object sender, EventArgs e)
         {
             receivedTb.Clear();
+            Serial.Received = 0;
+        }
+
+        private void ComPortCb_DropDown(object sender, EventArgs e)
+        {
+            ComPortUpdateList();
+            if (comPortCb.Items.Count > 0)
+            {
+                comPortCb.SelectedIndex = 0;
+                connectBtn.Enabled = true;
+            }
+        }
+
+        private void ComPortUpdateList()
+        {
+            Dictionary<string, string> portNames = new Dictionary<string, string>();
+            string[] ports = Serial.GetPortNames();
+
+            foreach (string portname in ports)
+            {
+                portNames.Add(portname, portname);
+            }
+
+            /* Drop data source */
+            comPortCb.DataSource = null;
+            comPortCb.Items.Clear();
+            comPortCb.DataSource = new BindingSource(portNames, null);
+            comPortCb.DisplayMember = "Key";
+            comPortCb.ValueMember = "Value";
+        }
+
+        private void sendBtn_Click(object sender, EventArgs e)
+        {
+            Serial.Write(rawDataTb.Text);
+        }
+
+        private void receivedTb_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(isEchoEnabled == false)
+            {
+                e.Handled = true;
+            }
+            Serial.WriteByte((byte)e.KeyChar);
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            rawDataTb.Text = "";
+            Serial.Sent = 0;
         }
     }
 }

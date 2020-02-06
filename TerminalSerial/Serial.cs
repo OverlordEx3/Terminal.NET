@@ -87,6 +87,20 @@ namespace TerminalSerial
             Sent += count;
         }
 
+        new public void Write(string text)
+        {
+            base.Write(text);
+            Sent += text.Length;
+        }
+
+        public void WriteByte(byte buf)
+        {
+            byte[] auxbuf = new byte[1];
+            auxbuf[0] = buf;
+            base.Write(auxbuf, 0, 1);
+            Sent += 1;
+        }
+
         public async Task WriteAsync(byte[] buffer, int offset, int count)
         {
             await base.BaseStream.WriteAsync(buffer, offset, count);

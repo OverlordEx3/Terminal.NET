@@ -11,6 +11,7 @@ using TerminalSerial;
 using System.IO.Ports;
 using System.IO;
 using Terminal.BindableComponents;
+using System.Runtime.InteropServices;
 
 namespace Terminal
 {
@@ -20,6 +21,7 @@ namespace Terminal
         private UpdatableFields miscData = new UpdatableFields();
         private bool ShowAscii = true;
         private bool isEchoEnabled = false;
+        private bool scrollToEnd = true;
 
         
         private readonly Dictionary<string, Parity> parityDictionary = new Dictionary<string, Parity>()
@@ -85,6 +87,8 @@ namespace Terminal
                 comPortCb.SelectedIndex = 0;
                 connectBtn.Enabled = true;
             }
+
+            receivedTb.GotFocus += new EventHandler(OnGotFocus);
 
             BaudrateCb.DataSource = new BindingSource(baudrateDictionary, null);
             BaudrateCb.DisplayMember = "Key";
@@ -195,15 +199,13 @@ namespace Terminal
                 if (Serial.IsOpen == true)
                 {
                     miscData.ErrorString = "Connected";
+                    connectBtn.Text = "Disconnect";
+                    comPortCb.Enabled = false;
                 }
-            }
-            catch (Exception ex)
+            } catch(IOException ioEx)
             {
-                Console.WriteLine(ex.Message);
-            }
 
-            connectBtn.Text = "Disconnect";
-            comPortCb.Enabled = false;
+            }
         }
 
         private void HandleDisconnection()
@@ -243,11 +245,21 @@ namespace Terminal
 
         private void OnSerialDataArrived(TerminalSerialDataEventArgs args)
         {
+            string receivedString;
             try
             {
                 this.BeginInvoke(new EventHandler(delegate
                 {
-                    receivedTb.Text += Encoding.ASCII.GetString(args.DataRead, 0, args.BytesRead);
+                    if(RcvHexRb.Checked == true)
+                    {
+                        receivedString = BitConverter.ToString(args.DataRead, 0, args.BytesRead).Replace('-', ' ');
+                    } else
+                    {
+                        receivedString = Encoding.ASCII.GetString(args.DataRead, 0, args.BytesRead);
+                    }
+                    receivedTb.AppendText(receivedString);
+                    receivedTb.SelectionStart = receivedTb.Text.Length;
+                    receivedTb.ScrollToCaret();
                 }));
             }
             catch (Exception)
@@ -309,5 +321,13 @@ namespace Terminal
             rawDataTb.Text = "";
             Serial.Sent = 0;
         }
+
+        private void OnGotFocus(object sender, EventArgs e)
+        {
+            HideCaret(receivedTb.Handle);
+        }
+
+        [DllImport("user32.dll")]
+        static extern bool HideCaret(System.IntPtr hWnd);
     }
 }

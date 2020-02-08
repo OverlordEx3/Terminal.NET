@@ -120,7 +120,7 @@ namespace TerminalSerial
             try
             {
                 read = base.Read(buffer, offset, count);
-            } catch( TimeoutException timeout)
+            } catch (TimeoutException)
             {
                 read = 0;
             }

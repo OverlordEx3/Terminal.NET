@@ -45,8 +45,8 @@
             this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.customBrTb = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.radioButton30 = new System.Windows.Forms.RadioButton();
-            this.radioButton31 = new System.Windows.Forms.RadioButton();
+            this.RcvHexRb = new System.Windows.Forms.RadioButton();
+            this.RcvAsciiRb = new System.Windows.Forms.RadioButton();
             this.button6 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
@@ -279,8 +279,8 @@
             // 
             // groupBox7
             // 
-            this.groupBox7.Controls.Add(this.radioButton30);
-            this.groupBox7.Controls.Add(this.radioButton31);
+            this.groupBox7.Controls.Add(this.RcvHexRb);
+            this.groupBox7.Controls.Add(this.RcvAsciiRb);
             this.groupBox7.Controls.Add(this.button6);
             this.groupBox7.Location = new System.Drawing.Point(3, 75);
             this.groupBox7.Margin = new System.Windows.Forms.Padding(0);
@@ -290,29 +290,29 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Receive";
             // 
-            // radioButton30
+            // RcvHexRb
             // 
-            this.radioButton30.AutoSize = true;
-            this.radioButton30.Location = new System.Drawing.Point(8, 15);
-            this.radioButton30.Margin = new System.Windows.Forms.Padding(0);
-            this.radioButton30.Name = "radioButton30";
-            this.radioButton30.Size = new System.Drawing.Size(44, 17);
-            this.radioButton30.TabIndex = 1;
-            this.radioButton30.Text = "Hex";
-            this.radioButton30.UseVisualStyleBackColor = true;
+            this.RcvHexRb.AutoSize = true;
+            this.RcvHexRb.Location = new System.Drawing.Point(8, 15);
+            this.RcvHexRb.Margin = new System.Windows.Forms.Padding(0);
+            this.RcvHexRb.Name = "RcvHexRb";
+            this.RcvHexRb.Size = new System.Drawing.Size(44, 17);
+            this.RcvHexRb.TabIndex = 1;
+            this.RcvHexRb.Text = "Hex";
+            this.RcvHexRb.UseVisualStyleBackColor = true;
             // 
-            // radioButton31
+            // RcvAsciiRb
             // 
-            this.radioButton31.AutoSize = true;
-            this.radioButton31.Checked = true;
-            this.radioButton31.Location = new System.Drawing.Point(57, 15);
-            this.radioButton31.Margin = new System.Windows.Forms.Padding(0);
-            this.radioButton31.Name = "radioButton31";
-            this.radioButton31.Size = new System.Drawing.Size(52, 17);
-            this.radioButton31.TabIndex = 2;
-            this.radioButton31.TabStop = true;
-            this.radioButton31.Text = "ASCII";
-            this.radioButton31.UseVisualStyleBackColor = true;
+            this.RcvAsciiRb.AutoSize = true;
+            this.RcvAsciiRb.Checked = true;
+            this.RcvAsciiRb.Location = new System.Drawing.Point(57, 15);
+            this.RcvAsciiRb.Margin = new System.Windows.Forms.Padding(0);
+            this.RcvAsciiRb.Name = "RcvAsciiRb";
+            this.RcvAsciiRb.Size = new System.Drawing.Size(52, 17);
+            this.RcvAsciiRb.TabIndex = 2;
+            this.RcvAsciiRb.TabStop = true;
+            this.RcvAsciiRb.Text = "ASCII";
+            this.RcvAsciiRb.UseVisualStyleBackColor = true;
             // 
             // button6
             // 
@@ -350,7 +350,9 @@
             this.receivedTb.Margin = new System.Windows.Forms.Padding(0);
             this.receivedTb.Multiline = true;
             this.receivedTb.Name = "receivedTb";
-            this.receivedTb.Size = new System.Drawing.Size(797, 467);
+            this.receivedTb.ReadOnly = true;
+            this.receivedTb.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.receivedTb.Size = new System.Drawing.Size(797, 466);
             this.receivedTb.TabIndex = 12;
             this.receivedTb.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.receivedTb_KeyPress);
             // 
@@ -714,7 +716,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.sendBtn);
             this.splitContainer1.Panel2.Controls.Add(this.rawDataTb);
             this.splitContainer1.Size = new System.Drawing.Size(797, 556);
-            this.splitContainer1.SplitterDistance = 467;
+            this.splitContainer1.SplitterDistance = 466;
             this.splitContainer1.TabIndex = 20;
             // 
             // sendBtn
@@ -723,7 +725,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sendBtn.Location = new System.Drawing.Point(737, 3);
             this.sendBtn.Name = "sendBtn";
-            this.sendBtn.Size = new System.Drawing.Size(58, 82);
+            this.sendBtn.Size = new System.Drawing.Size(58, 83);
             this.sendBtn.TabIndex = 1;
             this.sendBtn.Text = "Send";
             this.sendBtn.UseVisualStyleBackColor = true;
@@ -737,7 +739,7 @@
             this.rawDataTb.Location = new System.Drawing.Point(0, 3);
             this.rawDataTb.Multiline = true;
             this.rawDataTb.Name = "rawDataTb";
-            this.rawDataTb.Size = new System.Drawing.Size(736, 81);
+            this.rawDataTb.Size = new System.Drawing.Size(736, 82);
             this.rawDataTb.TabIndex = 0;
             // 
             // Form1
@@ -809,9 +811,9 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.RadioButton radioButton30;
+        private System.Windows.Forms.RadioButton RcvHexRb;
         private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.RadioButton radioButton31;
+        private System.Windows.Forms.RadioButton RcvAsciiRb;
         private System.Windows.Forms.TextBox receivedTb;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.CheckBox checkBox12;

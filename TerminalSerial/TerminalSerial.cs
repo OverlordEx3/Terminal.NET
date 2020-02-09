@@ -142,5 +142,37 @@ namespace TerminalSerial
                 throw;
             }
         }
+
+        public new int ReadByte()
+        {
+            try
+            {
+                int readByte = base.ReadByte();
+                if(readByte != -1)
+                {
+                    Received += 1;
+                }
+                return readByte;
+            } catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public new int ReadChar()
+        {
+            try
+            {
+                int readChar = base.ReadChar();
+                Received += 1;
+                return readChar;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

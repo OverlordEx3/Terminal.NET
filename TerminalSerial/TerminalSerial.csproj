@@ -52,6 +52,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SerialFody.cs" />
+    <Compile Include="TerminalSerial.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

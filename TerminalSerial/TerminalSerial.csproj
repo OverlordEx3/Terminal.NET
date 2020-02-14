@@ -48,13 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serial.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="SerialFody.cs" />
     <Compile Include="TerminalSerial.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TerminalSerialReceiveThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

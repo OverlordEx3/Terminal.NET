@@ -13,16 +13,10 @@ using System.IO;
 using Terminal.BindableComponents;
 using System.Runtime.InteropServices;
 
-namespace Terminal
+namespace Terminal.Forms
 {
-    public partial class Form1 : Form
+    public partial class MainTerminal : Form
     {
-        private Serial SerialPort;
-        private UpdatableFields miscData = new UpdatableFields();
-        private bool ShowAscii = true;
-        private bool isEchoEnabled = false;
-        private bool scrollToEnd = true;
-
         private readonly Dictionary<string, Parity> parityDictionary = new Dictionary<string, Parity>()
         {
             {"None", Parity.None },
@@ -68,7 +62,7 @@ namespace Terminal
             { "8", 8 },
         };
 
-        public Form1()
+        public MainTerminal()
         {
             InitializeComponent();
         }
@@ -76,7 +70,6 @@ namespace Terminal
         private void Form1_Load(object sender, EventArgs e)
         {
             BindableToolStripLabel bindableToolStripLabel;
-            SerialPort = new Serial();
 
             ComPortUpdateList();
             comPortCb.DisplayMember = "Key";
@@ -114,7 +107,6 @@ namespace Terminal
             /* Bind items */
         /* Status text */
         bindableToolStripLabel = new BindableToolStripLabel();
-            bindableToolStripLabel.DataBindings.Add(new Binding("Text", miscData, "ErrorString"));
             statusStrip1.Items.Add(bindableToolStripLabel);
 
             /* Split */
@@ -127,7 +119,6 @@ namespace Terminal
             bindableToolStripLabel.Text = "RX: ";
             statusStrip1.Items.Add(bindableToolStripLabel);
             bindableToolStripLabel = new BindableToolStripLabel();
-            bindableToolStripLabel.DataBindings.Add(new Binding("Text", SerialPort, "Received"));
             statusStrip1.Items.Add(bindableToolStripLabel);
 
             /* Split */
@@ -140,13 +131,10 @@ namespace Terminal
             bindableToolStripLabel.Text = "TX: ";
             statusStrip1.Items.Add(bindableToolStripLabel);
             bindableToolStripLabel = new BindableToolStripLabel();
-            bindableToolStripLabel.DataBindings.Add(new Binding("Text", SerialPort, "Sent"));
             statusStrip1.Items.Add(bindableToolStripLabel);
 
             splitContainer1.Panel1MinSize = 150;
             splitContainer1.Panel2MinSize = 50;
-
-            SerialPort.OnDataReceived = OnSerialDataArrived;
 
             PropertyChangedNotificationInterceptor.UIContext = System.Threading.SynchronizationContext.Current;
         }
@@ -182,66 +170,14 @@ namespace Terminal
             return (StopBits)StopbitCb.SelectedValue;
         }
 
-        private void HandleConnection()
-        {
-            /* Initialize port options */
-            SerialPort.BaudRate = BaudrateFromUI();
-            SerialPort.DataBits = DatabitsFromUI();
-            SerialPort.Parity = ParityFromUI();
-            SerialPort.StopBits = StopbitsFromUI();
-            SerialPort.Handshake = HandshakeFromUI();
-            SerialPort.ReadTimeout = 50;
-            SerialPort.PortName = (string)comPortCb.SelectedValue;
-            try
-            {
-                SerialPort.Open();
-                if (SerialPort.IsOpen == true)
-                {
-                    SerialPort.BeginRead();
-                    miscData.ErrorString = "Connected";
-                    connectBtn.Text = "Disconnect";
-                    comPortCb.Enabled = false;
-                }
-            } catch(IOException ioEx)
-            {
-
-            }
-        }
-
-        private void HandleDisconnection()
-        {
-            SerialPort.EndRead();
-            SerialPort.Close();
-            miscData.ErrorString = "";
-            connectBtn.Text = "Connect";
-            comPortCb.Enabled = true;
-        }
-
         private void ConnectBtn_Click(object sender, EventArgs e)
         {
-            if (SerialPort.IsOpen)
-            {
-                HandleDisconnection();
-            }
-            else
-            {
-                HandleConnection();
-            }
+
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            try
-            {
-                if (SerialPort.IsOpen)
-                {
-                    SerialPort.Close();
-                }
-            }
-            catch (IOException)
-            {
 
-            }
         }
 
         private void OnSerialDataArrived(TerminalSerialDataEventArgs args)
@@ -271,18 +207,12 @@ namespace Terminal
 
         private void Button6_Click(object sender, EventArgs e)
         {
-            receivedTb.Clear();
-            SerialPort.Received = 0;
+
         }
 
         private void ComPortCb_DropDown(object sender, EventArgs e)
         {
-            ComPortUpdateList();
-            if (comPortCb.Items.Count > 0)
-            {
-                comPortCb.SelectedIndex = 0;
-                connectBtn.Enabled = true;
-            }
+
         }
 
         private void ComPortUpdateList()
@@ -305,22 +235,17 @@ namespace Terminal
 
         private void sendBtn_Click(object sender, EventArgs e)
         {
-            SerialPort.Write(rawDataTb.Text);
+
         }
 
         private void receivedTb_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(isEchoEnabled == false)
-            {
-                e.Handled = true;
-            }
-            SerialPort.WriteByte((byte)e.KeyChar);
+
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            rawDataTb.Text = "";
-            SerialPort.Sent = 0;
+
         }
 
         private void OnGotFocus(object sender, EventArgs e)

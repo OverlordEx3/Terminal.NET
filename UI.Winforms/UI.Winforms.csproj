@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4CD6D9A2-2D96-48B6-8A8E-6C5ED04A8A62}</ProjectGuid>
+    <ProjectGuid>{1938654E-C873-4FCB-89EF-34FBBF648619}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Terminal</RootNamespace>
-    <AssemblyName>Terminal</AssemblyName>
+    <RootNamespace>UI.Winforms</RootNamespace>
+    <AssemblyName>UI.Winforms</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -46,12 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BindableComponents\BindableToolStripLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BindableComponents\BindableToolStripStatusLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Forms\MainTerminal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,7 +66,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Properties\DataSources\Form1.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -87,9 +80,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TerminalSerial\TerminalSerial.csproj">
-      <Project>{443dd055-847e-4534-a135-5ff2f32c1488}</Project>
-      <Name>TerminalSerial</Name>
+    <ProjectReference Include="..\Logic.MVP\Logic.MVP.csproj">
+      <Project>{2b914d18-b507-47fa-a0ab-b94900bd4868}</Project>
+      <Name>Logic.MVP</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

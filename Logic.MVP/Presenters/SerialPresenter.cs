@@ -46,6 +46,19 @@ namespace Logic.MVP.Presenters
             {"Space", Parity.Space },
         };
 
+        private readonly Dictionary<string, int> BaudrateDictionary = new Dictionary<string, int>()
+        {
+            {"600", 600 },
+            { "2400", 2400},
+            {"4800", 4800 },
+            {"9600", 9600 },
+            {"19200", 19200 },
+            {"38400", 38400 },
+            {"57600", 57600 },
+            {"115200", 115200 },
+            {"<custom>", 0000 },
+        };
+
         public SerialPresenter(ISerialView view, ISerialModel model)
         {
             this.view = view;
@@ -58,7 +71,20 @@ namespace Logic.MVP.Presenters
 
             /* Parity changed */
             this.view.PortNameChanged += (sender, e) => model.Port.PortName = e;
-            this.view.BaudrateChanged += (sender, e) => model.Port.BaudRate = e;
+            this.view.BaudrateChanged += new EventHandler<string>(delegate (object o, string e)
+            {
+                if(BaudrateDictionary.ContainsKey(e))
+                {
+                    if(BaudrateDictionary[e] != 0000)
+                    {
+                        this.model.Port.BaudRate = BaudrateDictionary[e];
+                        this.view.SetCustomBaudrateOption(false);
+                    } else
+                    {
+                        this.view.SetCustomBaudrateOption(true);
+                    }
+                }
+            });
             this.view.ParityChanged += new EventHandler<string>(delegate (object o, string e)
             {
                 if(ParityDictionary.ContainsKey(e))
@@ -96,6 +122,7 @@ namespace Logic.MVP.Presenters
 
             /* Update functions */
             this.view.PortNameUpdateRequest += (sender, e) => OnComPortNamesUpdateRequest();
+            this.view.BaudrateUpdateRequest += (sender, e) => OnBaudrateUpdateRequest();
             this.view.DataBitsUpdateRequest += (sender, e) => OnDataBitUpdateRequest();
             this.view.StopBitsUpdateRequest += (sender, e) => OnStopBitUpdateRequest();
             this.view.HandshakeUpdateRequest += (sender, e) => OnHandshakeUpdateRequest();
@@ -125,6 +152,11 @@ namespace Logic.MVP.Presenters
         void OnParityUpdateRequest()
         {
             view.ParityUpdate(ParityDictionary.Keys.ToArray());
+        }
+
+        void OnBaudrateUpdateRequest()
+        {
+            view.BaudrateUpdate(BaudrateDictionary.Keys.ToArray());
         }
 
         void OnConnect(object sender, EventArgs e)

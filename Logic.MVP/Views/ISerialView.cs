@@ -22,10 +22,11 @@ namespace Logic.MVP.Views
         /* Params events */
         event EventHandler<string> ParityChanged;
         event EventHandler<string> PortNameChanged;
-        event EventHandler<int> BaudrateChanged;
+        event EventHandler<string> BaudrateChanged;
         event EventHandler<string> HandshakeChanged;
         event EventHandler<string> StopbitsChanged;
         event EventHandler<string> DataBitsChanged;
+        event EventHandler<string> CustomBaudrateChanged;
 
         /* Operation events */
         event EventHandler ConnectStatusChange;
@@ -68,7 +69,7 @@ namespace Logic.MVP.Views
         void DataBitsUpdate(string[] databits);
         void StopBitsUpdate(string[] stopbits);
         void HandshakeUpdate(string[] handshake);
-
         void ParityUpdate(string[] parity);
+        void SetCustomBaudrateOption(bool enable);
     }
 }

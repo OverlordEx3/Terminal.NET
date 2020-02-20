@@ -16,19 +16,6 @@ namespace UI.Winforms.Forms
 {
     public partial class MainTerminal : Form, ISerialView
     {
-        private readonly Dictionary<string, int> baudrateDictionary = new Dictionary<string, int>()
-        {
-            {"600", 600 },
-            { "2400", 2400},
-            {"4800", 4800 },
-            {"9600", 9600 },
-            {"19200", 19200 },
-            {"38400", 38400 },
-            {"57600", 57600 },
-            {"115200", 115200 },
-            {"<custom>", 0000 },
-        };
-
         public event EventHandler<string> SendFile;
         public event EventHandler<string> SendString;
         public event EventHandler<char> SendKey;
@@ -37,7 +24,7 @@ namespace UI.Winforms.Forms
         public event EventHandler<bool> TransmitCRAsLFChanged;
         public event EventHandler<string> ParityChanged;
         public event EventHandler<string> PortNameChanged;
-        public event EventHandler<int> BaudrateChanged;
+        public event EventHandler<string> BaudrateChanged;
         public event EventHandler<string> HandshakeChanged;
         public event EventHandler<string> StopbitsChanged;
         public event EventHandler<string> DataBitsChanged;
@@ -59,6 +46,7 @@ namespace UI.Winforms.Forms
         public event EventHandler StopBitsUpdateRequest;
         public event EventHandler HandshakeUpdateRequest;
         public event EventHandler ParityUpdateRequest;
+        public event EventHandler<string> CustomBaudrateChanged;
 
         public MainTerminal()
         {
@@ -76,6 +64,7 @@ namespace UI.Winforms.Forms
 
             /* Ask for parameters update */
             PortNameUpdateRequest?.Invoke(this, new EventArgs());
+            BaudrateUpdateRequest?.Invoke(this, new EventArgs());
             DataBitsUpdateRequest?.Invoke(this, new EventArgs());
             StopBitsUpdateRequest?.Invoke(this, new EventArgs());
             HandshakeUpdateRequest?.Invoke(this, new EventArgs());
@@ -189,6 +178,16 @@ namespace UI.Winforms.Forms
         private void ComPortCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             PortNameChanged?.Invoke(this, (string)comPortCb.SelectedValue);
+        }
+
+        public void SetCustomBaudrateOption(bool enable)
+        {
+            customBrTb.Enabled = enable;
+        }
+
+        private void BaudrateCb_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            BaudrateChanged?.Invoke(this, (string)BaudrateCb.SelectedValue);
         }
     }
 }

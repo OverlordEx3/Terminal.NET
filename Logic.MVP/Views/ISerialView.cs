@@ -15,7 +15,7 @@ namespace Logic.MVP.Views
         event EventHandler<char> SendKey;
         event EventHandler<string> SendMacro;
         /* Receive settings event */
-        event EventHandler ReceiveDataTypeChanged;
+        event EventHandler<bool> ReceiveDataTypeChanged;
         /* Transmit settings event */
         event EventHandler<bool> TransmitCRAsLFChanged;
 
@@ -39,13 +39,13 @@ namespace Logic.MVP.Views
         event EventHandler SetRequestResponse;
 
         /* Settings events */
-        event EventHandler LineStatusChanged;
-        event EventHandler AutoDisconnectChanged;
-        event EventHandler LogTimeChanged;
-        event EventHandler NewLineCharacterChanged;
-        event EventHandler LogStreamChanged;
+        event EventHandler<bool> LineStatusChanged;
+        event EventHandler<bool> AutoDisconnectChanged;
+        event EventHandler<bool> LogTimeChanged;
+        event EventHandler<bool> NewLineCharacterChanged;
+        event EventHandler<bool> LogStreamChanged;
 
-        event EventHandler EchoChanged;
+        event EventHandler<bool> EchoChanged;
 
         /* Request Events */
         event EventHandler PortNameUpdateRequest;
@@ -59,7 +59,7 @@ namespace Logic.MVP.Views
         void AppendReceivedData(string str);
         void AppendReceivedData(byte[] buf, int offset, int count);
 
-        void ComPortConnectedStatusUpdate(bool succeed, string error);
+        void ComPortConnectedStatusUpdate(bool connectionStatus, string error);
         void ComPortErrorState(string error);
         void TransmitedUpdate(int transmited);
         void ReceivedUpdate(int received);

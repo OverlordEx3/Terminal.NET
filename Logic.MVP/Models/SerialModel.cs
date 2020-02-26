@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SerialTerminal;
 
 namespace Logic.MVP.Models
 {
@@ -32,7 +33,7 @@ namespace Logic.MVP.Models
         public bool EnableEcho { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string LogFilePath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool StreamLog { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public SerialPort Port { get; set; }
+        public ISerialTerminalPort Port { get; set; }
         public int Sent 
         { 
             get => sentQty; 
@@ -70,7 +71,7 @@ namespace Logic.MVP.Models
 
         public SerialModel()
         {
-            this.Port = new SerialPort();
+            Port = new SerialTerminalPort();
         }
 
         public void ClearReceived()
@@ -136,6 +137,11 @@ namespace Logic.MVP.Models
         }
 
         public bool StartLog(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopLog()
         {
             throw new NotImplementedException();
         }

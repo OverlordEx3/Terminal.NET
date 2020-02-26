@@ -4,23 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static TerminalSerial.Serial;
+using System.IO.Ports;
 
-namespace TerminalSerial
+namespace SerialTerminal
 {
     internal class TerminalSerialReceiveThread
     {
-        private readonly Serial port;
+        private readonly SerialPort port;
 
-        public TerminalSerialOnDataReceivedHandler DataReceived { get; set; } = null;
+        public event EventHandler<SerialTerminalReceivedData> DataReceived;
 
-        public TerminalSerialReceiveThread(Serial port, TerminalSerialOnDataReceivedHandler dataReceivedDelegate)
+        public TerminalSerialReceiveThread(SerialPort port, EventHandler<SerialTerminalReceivedData> dataReceivedDelegate)
         {
             this.port = port;
             DataReceived = dataReceivedDelegate;
         }
 
-        public TerminalSerialReceiveThread(Serial port)
+        public TerminalSerialReceiveThread(SerialPort port)
         {
             this.port = port;
         }
@@ -35,7 +35,7 @@ namespace TerminalSerial
                 int read = port.Read(rcvBuf, 0, rcvBuf.Length);
                 if (read > 0)
                 {
-                    DataReceived?.Invoke(new TerminalSerialDataEventArgs { BytesRead = read, DataRead = rcvBuf });
+                    DataReceived?.Invoke(this.port, new SerialTerminalReceivedData(rcvBuf, read));
                     /* Give time to process */
                     Thread.Sleep(50);
                 }

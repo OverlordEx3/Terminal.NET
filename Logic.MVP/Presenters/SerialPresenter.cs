@@ -70,14 +70,14 @@ namespace Logic.MVP.Presenters
             this.view.TransmitClean += (sender, e) => OnTransmitClear(sender, e);
 
             /* Parity changed */
-            this.view.PortNameChanged += (sender, e) => model.Port.PortName = e;
+            this.view.PortNameChanged += (sender, e) => this.model.Port.Name = e;
             this.view.BaudrateChanged += new EventHandler<string>(delegate (object o, string e)
             {
                 if(BaudrateDictionary.ContainsKey(e))
                 {
                     if(BaudrateDictionary[e] != 0000)
                     {
-                        this.model.Port.BaudRate = BaudrateDictionary[e];
+                        this.model.Port.Baudrate = BaudrateDictionary[e];
                         this.view.SetCustomBaudrateOption(false);
                     } else
                     {
@@ -127,6 +127,8 @@ namespace Logic.MVP.Presenters
             this.view.StopBitsUpdateRequest += (sender, e) => OnStopBitUpdateRequest();
             this.view.HandshakeUpdateRequest += (sender, e) => OnHandshakeUpdateRequest();
             this.view.ParityUpdateRequest += (sender, e) => OnParityUpdateRequest();
+
+            
         }
         
         void OnComPortNamesUpdateRequest()
@@ -183,16 +185,28 @@ namespace Logic.MVP.Presenters
 
         void OnSendFile(string filePath)
         {
+            if (model.Port.IsOpen == false)
+            {
+                return;
+            }
             model.SendFile(filePath);
         }
 
         void OnSendString(string str)
         {
+            if (model.Port.IsOpen == false)
+            {
+                return;
+            }
             model.SendString(str);
         }
 
         void OnSendKey(char key)
         {
+            if(model.Port.IsOpen == false)
+            {
+                return;
+            }
             model.SendKey(key);
         }
     }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using SerialTerminal;
 
 namespace Logic.MVP.Models
 {
@@ -52,7 +53,7 @@ namespace Logic.MVP.Models
         string LogFilePath { get; set; }
         bool StreamLog { get; set; }
 
-        SerialPort Port { get; set; }
+        ISerialTerminalPort Port { get; set; }
 
         /* Transaction quantities */
         int Sent { get; set; }
@@ -63,6 +64,7 @@ namespace Logic.MVP.Models
         void SetMacro(int index, string Macro);
         string GetMacro(int index);
         bool StartLog(string filePath);
+        void StopLog();
         void SetRequestResponse(int index, string request, string response);
 
         bool SendFile(string filePath);

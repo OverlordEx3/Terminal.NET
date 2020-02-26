@@ -20,7 +20,7 @@ namespace UI.Winforms.Forms
         public event EventHandler<string> SendString;
         public event EventHandler<char> SendKey;
         public event EventHandler<string> SendMacro;
-        public event EventHandler ReceiveDataTypeChanged;
+        public event EventHandler<bool> ReceiveDataTypeChanged;
         public event EventHandler<bool> TransmitCRAsLFChanged;
         public event EventHandler<string> ParityChanged;
         public event EventHandler<string> PortNameChanged;
@@ -34,12 +34,12 @@ namespace UI.Winforms.Forms
         public event EventHandler MacroSet;
         public event EventHandler LogStart;
         public event EventHandler SetRequestResponse;
-        public event EventHandler LineStatusChanged;
-        public event EventHandler AutoDisconnectChanged;
-        public event EventHandler LogTimeChanged;
-        public event EventHandler NewLineCharacterChanged;
-        public event EventHandler LogStreamChanged;
-        public event EventHandler EchoChanged;
+        public event EventHandler<bool> LineStatusChanged;
+        public event EventHandler<bool> AutoDisconnectChanged;
+        public event EventHandler<bool> LogTimeChanged;
+        public event EventHandler<bool> NewLineCharacterChanged;
+        public event EventHandler<bool> LogStreamChanged;
+        public event EventHandler<bool> EchoChanged;
         public event EventHandler PortNameUpdateRequest;
         public event EventHandler BaudrateUpdateRequest;
         public event EventHandler DataBitsUpdateRequest;
@@ -59,8 +59,21 @@ namespace UI.Winforms.Forms
             splitContainer1.Panel1MinSize = 150;
             splitContainer1.Panel2MinSize = 50;
 
+            comPortCb.DisplayMember = "Key";
+            comPortCb.ValueMember = "Value";
+            BaudrateCb.DisplayMember = "Key";
+            BaudrateCb.ValueMember = "Value";
+            DatabitCb.DisplayMember = "Key";
+            DatabitCb.ValueMember = "Value";
             ParityCb.DisplayMember = "Key";
             ParityCb.ValueMember = "Value";
+            StopbitCb.DisplayMember = "Key";
+            StopbitCb.ValueMember = "Value";
+            HandshakeCb.DisplayMember = "Key";
+            HandshakeCb.ValueMember = "Value";
+
+            RcvAsciiRb.Tag = true;
+            RcvHexRb.Tag = false;
 
             /* Ask for parameters update */
             PortNameUpdateRequest?.Invoke(this, new EventArgs());
@@ -96,7 +109,13 @@ namespace UI.Winforms.Forms
 
         public void ComPortConnectedStatusUpdate(bool succeed, string error)
         {
-            throw new NotImplementedException();
+            if(succeed == true)
+            {
+                connectBtn.Text = "Disconnect";
+            } else
+            {
+                connectBtn.Text = "Connect";
+            }            
         }
 
         public void ComPortErrorState(string error)
@@ -188,6 +207,96 @@ namespace UI.Winforms.Forms
         private void BaudrateCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             BaudrateChanged?.Invoke(this, (string)BaudrateCb.SelectedValue);
+        }
+
+        private void ConnectBtn_Click(object sender, EventArgs e)
+        {
+            ConnectStatusChange?.Invoke(this, new EventArgs());
+        }
+
+        private void ReceivedTb_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            SendKey?.Invoke(this, e.KeyChar);
+        }
+
+        private void CustomBrTb_TextChanged(object sender, EventArgs e)
+        {
+            CustomBaudrateChanged?.Invoke(this, customBrTb.Text);
+        }
+
+        private void ClearRcvBtn_Click(object sender, EventArgs e)
+        {
+            ReceiveClean?.Invoke(this, new EventArgs());
+        }
+
+        private void ClearTransmitBtn_Click(object sender, EventArgs e)
+        {
+            TransmitClean?.Invoke(this, new EventArgs());
+        }
+
+        private void EchoChkb_CheckedChanged(object sender, EventArgs e)
+        {
+            EchoChanged?.Invoke(this, EchoChkb.Checked);
+        }
+
+        private void DatabitCb_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            DataBitsChanged?.Invoke(this, (string)DatabitCb.SelectedValue);
+        }
+
+        private void ParityCb_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            ParityChanged?.Invoke(this, (string)ParityCb.SelectedValue);
+        }
+
+        private void StopbitCb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            StopbitsChanged?.Invoke(this, (string)StopbitCb.SelectedValue);
+        }
+
+        private void HandshakeCb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            HandshakeChanged?.Invoke(this, (string)HandshakeCb.SelectedValue);
+        }
+
+        private void SendBtn_Click(object sender, EventArgs e)
+        {
+            SendString?.Invoke(this, rawDataTb.Text);
+        }
+
+        private void NewLineFormatCkb_CheckedChanged(object sender, EventArgs e)
+        {
+            TransmitCRAsLFChanged?.Invoke(this, NewLineFormatCkb.Checked);
+        }
+
+        private void CrAsLFChb_CheckedChanged(object sender, EventArgs e)
+        {
+            NewLineCharacterChanged?.Invoke(this, CrAsLFChb.Checked);
+        }
+
+        private void LogStreamChb_CheckedChanged(object sender, EventArgs e)
+        {
+            LogStreamChanged?.Invoke(this, LogStreamChb.Checked);
+        }
+
+        private void AppendTimeChb_CheckedChanged(object sender, EventArgs e)
+        {
+            LogTimeChanged?.Invoke(this, AppendTimeChb.Checked);
+        }
+
+        private void AutoDisconnectChb_CheckedChanged(object sender, EventArgs e)
+        {
+            AutoDisconnectChanged?.Invoke(this, AutoDisconnectChb.Checked);
+        }
+
+        private void RcvAsciiRb_CheckedChanged(object sender, EventArgs e)
+        {
+            ReceiveDataTypeChanged?.Invoke(this, (bool)RcvAsciiRb.Tag);
+        }
+
+        private void RcvHexRb_CheckedChanged(object sender, EventArgs e)
+        {
+            ReceiveDataTypeChanged?.Invoke(this, (bool)RcvAsciiRb.Tag);
         }
     }
 }

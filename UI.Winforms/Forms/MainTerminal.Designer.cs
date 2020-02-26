@@ -36,24 +36,24 @@
             this.HandshakeCb = new System.Windows.Forms.ComboBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.checkBox9 = new System.Windows.Forms.CheckBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.LogStreamChb = new System.Windows.Forms.CheckBox();
+            this.CrAsLFChb = new System.Windows.Forms.CheckBox();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.AppendTimeChb = new System.Windows.Forms.CheckBox();
+            this.AutoDisconnectChb = new System.Windows.Forms.CheckBox();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.customBrTb = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.RcvHexRb = new System.Windows.Forms.RadioButton();
             this.RcvAsciiRb = new System.Windows.Forms.RadioButton();
-            this.button6 = new System.Windows.Forms.Button();
+            this.ClearRcvBtn = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.receivedTb = new System.Windows.Forms.TextBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.checkBox10 = new System.Windows.Forms.CheckBox();
-            this.button10 = new System.Windows.Forms.Button();
+            this.NewLineFormatCkb = new System.Windows.Forms.CheckBox();
+            this.ClearTransmitBtn = new System.Windows.Forms.Button();
             this.checkBox12 = new System.Windows.Forms.CheckBox();
             this.checkBox11 = new System.Windows.Forms.CheckBox();
             this.button11 = new System.Windows.Forms.Button();
@@ -80,7 +80,7 @@
             this.comPortCb = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.EchoChkb = new System.Windows.Forms.CheckBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.sendBtn = new System.Windows.Forms.Button();
             this.rawDataTb = new System.Windows.Forms.TextBox();
@@ -116,7 +116,7 @@
             // 
             this.BaudrateCb.FormattingEnabled = true;
             this.BaudrateCb.Location = new System.Drawing.Point(5, 19);
-            this.BaudrateCb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.BaudrateCb.Margin = new System.Windows.Forms.Padding(2);
             this.BaudrateCb.Name = "BaudrateCb";
             this.BaudrateCb.Size = new System.Drawing.Size(74, 21);
             this.BaudrateCb.TabIndex = 0;
@@ -136,10 +136,11 @@
             // 
             this.ParityCb.FormattingEnabled = true;
             this.ParityCb.Location = new System.Drawing.Point(5, 19);
-            this.ParityCb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ParityCb.Margin = new System.Windows.Forms.Padding(2);
             this.ParityCb.Name = "ParityCb";
             this.ParityCb.Size = new System.Drawing.Size(71, 21);
             this.ParityCb.TabIndex = 20;
+            this.ParityCb.SelectionChangeCommitted += new System.EventHandler(this.ParityCb_SelectionChangeCommitted);
             // 
             // handShakeGb
             // 
@@ -161,21 +162,22 @@
             "RTS/CTS+XON/XOFF",
             "RTS on TX"});
             this.HandshakeCb.Location = new System.Drawing.Point(5, 19);
-            this.HandshakeCb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.HandshakeCb.Margin = new System.Windows.Forms.Padding(2);
             this.HandshakeCb.Name = "HandshakeCb";
             this.HandshakeCb.Size = new System.Drawing.Size(91, 21);
             this.HandshakeCb.TabIndex = 21;
+            this.HandshakeCb.SelectedIndexChanged += new System.EventHandler(this.HandshakeCb_SelectedIndexChanged);
             // 
             // groupBox6
             // 
             this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox6.Controls.Add(this.checkBox9);
-            this.groupBox6.Controls.Add(this.checkBox5);
-            this.groupBox6.Controls.Add(this.checkBox4);
+            this.groupBox6.Controls.Add(this.LogStreamChb);
+            this.groupBox6.Controls.Add(this.CrAsLFChb);
             this.groupBox6.Controls.Add(this.checkBox8);
-            this.groupBox6.Controls.Add(this.checkBox3);
-            this.groupBox6.Controls.Add(this.checkBox2);
+            this.groupBox6.Controls.Add(this.AppendTimeChb);
+            this.groupBox6.Controls.Add(this.AutoDisconnectChb);
             this.groupBox6.Controls.Add(this.checkBox7);
             this.groupBox6.Controls.Add(this.checkBox6);
             this.groupBox6.Location = new System.Drawing.Point(514, 2);
@@ -196,27 +198,29 @@
             this.checkBox9.Text = "RI";
             this.checkBox9.UseVisualStyleBackColor = true;
             // 
-            // checkBox5
+            // LogStreamChb
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(121, 35);
-            this.checkBox5.Margin = new System.Windows.Forms.Padding(0);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(76, 17);
-            this.checkBox5.TabIndex = 3;
-            this.checkBox5.Text = "Stream log";
-            this.checkBox5.UseVisualStyleBackColor = true;
+            this.LogStreamChb.AutoSize = true;
+            this.LogStreamChb.Location = new System.Drawing.Point(121, 35);
+            this.LogStreamChb.Margin = new System.Windows.Forms.Padding(0);
+            this.LogStreamChb.Name = "LogStreamChb";
+            this.LogStreamChb.Size = new System.Drawing.Size(76, 17);
+            this.LogStreamChb.TabIndex = 3;
+            this.LogStreamChb.Text = "Stream log";
+            this.LogStreamChb.UseVisualStyleBackColor = true;
+            this.LogStreamChb.CheckedChanged += new System.EventHandler(this.LogStreamChb_CheckedChanged);
             // 
-            // checkBox4
+            // CrAsLFChb
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(121, 18);
-            this.checkBox4.Margin = new System.Windows.Forms.Padding(0);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(65, 17);
-            this.checkBox4.TabIndex = 2;
-            this.checkBox4.Text = "CR = LF";
-            this.checkBox4.UseVisualStyleBackColor = true;
+            this.CrAsLFChb.AutoSize = true;
+            this.CrAsLFChb.Location = new System.Drawing.Point(121, 18);
+            this.CrAsLFChb.Margin = new System.Windows.Forms.Padding(0);
+            this.CrAsLFChb.Name = "CrAsLFChb";
+            this.CrAsLFChb.Size = new System.Drawing.Size(65, 17);
+            this.CrAsLFChb.TabIndex = 2;
+            this.CrAsLFChb.Text = "CR = LF";
+            this.CrAsLFChb.UseVisualStyleBackColor = true;
+            this.CrAsLFChb.CheckedChanged += new System.EventHandler(this.CrAsLFChb_CheckedChanged);
             // 
             // checkBox8
             // 
@@ -228,27 +232,29 @@
             this.checkBox8.Text = "CD";
             this.checkBox8.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // AppendTimeChb
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(10, 35);
-            this.checkBox3.Margin = new System.Windows.Forms.Padding(0);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(49, 17);
-            this.checkBox3.TabIndex = 1;
-            this.checkBox3.Text = "Time";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.AppendTimeChb.AutoSize = true;
+            this.AppendTimeChb.Location = new System.Drawing.Point(10, 35);
+            this.AppendTimeChb.Margin = new System.Windows.Forms.Padding(0);
+            this.AppendTimeChb.Name = "AppendTimeChb";
+            this.AppendTimeChb.Size = new System.Drawing.Size(49, 17);
+            this.AppendTimeChb.TabIndex = 1;
+            this.AppendTimeChb.Text = "Time";
+            this.AppendTimeChb.UseVisualStyleBackColor = true;
+            this.AppendTimeChb.CheckedChanged += new System.EventHandler(this.AppendTimeChb_CheckedChanged);
             // 
-            // checkBox2
+            // AutoDisconnectChb
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(10, 18);
-            this.checkBox2.Margin = new System.Windows.Forms.Padding(0);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(111, 17);
-            this.checkBox2.TabIndex = 0;
-            this.checkBox2.Text = "Auto Dis/Connect";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.AutoDisconnectChb.AutoSize = true;
+            this.AutoDisconnectChb.Location = new System.Drawing.Point(10, 18);
+            this.AutoDisconnectChb.Margin = new System.Windows.Forms.Padding(0);
+            this.AutoDisconnectChb.Name = "AutoDisconnectChb";
+            this.AutoDisconnectChb.Size = new System.Drawing.Size(111, 17);
+            this.AutoDisconnectChb.TabIndex = 0;
+            this.AutoDisconnectChb.Text = "Auto Dis/Connect";
+            this.AutoDisconnectChb.UseVisualStyleBackColor = true;
+            this.AutoDisconnectChb.CheckedChanged += new System.EventHandler(this.AutoDisconnectChb_CheckedChanged);
             // 
             // checkBox7
             // 
@@ -272,17 +278,19 @@
             // 
             // customBrTb
             // 
+            this.customBrTb.Enabled = false;
             this.customBrTb.Location = new System.Drawing.Point(104, 44);
             this.customBrTb.Name = "customBrTb";
             this.customBrTb.Size = new System.Drawing.Size(74, 20);
             this.customBrTb.TabIndex = 4;
             this.customBrTb.Text = "600";
+            this.customBrTb.TextChanged += new System.EventHandler(this.CustomBrTb_TextChanged);
             // 
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.RcvHexRb);
             this.groupBox7.Controls.Add(this.RcvAsciiRb);
-            this.groupBox7.Controls.Add(this.button6);
+            this.groupBox7.Controls.Add(this.ClearRcvBtn);
             this.groupBox7.Location = new System.Drawing.Point(3, 75);
             this.groupBox7.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox7.Name = "groupBox7";
@@ -301,6 +309,7 @@
             this.RcvHexRb.TabIndex = 1;
             this.RcvHexRb.Text = "Hex";
             this.RcvHexRb.UseVisualStyleBackColor = true;
+            this.RcvHexRb.CheckedChanged += new System.EventHandler(this.RcvHexRb_CheckedChanged);
             // 
             // RcvAsciiRb
             // 
@@ -312,18 +321,21 @@
             this.RcvAsciiRb.Size = new System.Drawing.Size(52, 17);
             this.RcvAsciiRb.TabIndex = 2;
             this.RcvAsciiRb.TabStop = true;
+            this.RcvAsciiRb.Tag = "";
             this.RcvAsciiRb.Text = "ASCII";
             this.RcvAsciiRb.UseVisualStyleBackColor = true;
+            this.RcvAsciiRb.CheckedChanged += new System.EventHandler(this.RcvAsciiRb_CheckedChanged);
             // 
-            // button6
+            // ClearRcvBtn
             // 
-            this.button6.Location = new System.Drawing.Point(23, 39);
-            this.button6.Margin = new System.Windows.Forms.Padding(0);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(65, 20);
-            this.button6.TabIndex = 0;
-            this.button6.Text = "CLEAR";
-            this.button6.UseVisualStyleBackColor = true;
+            this.ClearRcvBtn.Location = new System.Drawing.Point(23, 39);
+            this.ClearRcvBtn.Margin = new System.Windows.Forms.Padding(0);
+            this.ClearRcvBtn.Name = "ClearRcvBtn";
+            this.ClearRcvBtn.Size = new System.Drawing.Size(65, 20);
+            this.ClearRcvBtn.TabIndex = 0;
+            this.ClearRcvBtn.Text = "CLEAR";
+            this.ClearRcvBtn.UseVisualStyleBackColor = true;
+            this.ClearRcvBtn.Click += new System.EventHandler(this.ClearRcvBtn_Click);
             // 
             // button9
             // 
@@ -352,14 +364,15 @@
             this.receivedTb.Name = "receivedTb";
             this.receivedTb.ReadOnly = true;
             this.receivedTb.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.receivedTb.Size = new System.Drawing.Size(797, 465);
+            this.receivedTb.Size = new System.Drawing.Size(797, 464);
             this.receivedTb.TabIndex = 12;
+            this.receivedTb.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ReceivedTb_KeyPress);
             // 
             // groupBox8
             // 
             this.groupBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox8.Controls.Add(this.checkBox10);
-            this.groupBox8.Controls.Add(this.button10);
+            this.groupBox8.Controls.Add(this.NewLineFormatCkb);
+            this.groupBox8.Controls.Add(this.ClearTransmitBtn);
             this.groupBox8.Location = new System.Drawing.Point(118, 75);
             this.groupBox8.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox8.Name = "groupBox8";
@@ -368,25 +381,27 @@
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Transmit";
             // 
-            // checkBox10
+            // NewLineFormatCkb
             // 
-            this.checkBox10.AutoSize = true;
-            this.checkBox10.Location = new System.Drawing.Point(6, 16);
-            this.checkBox10.Name = "checkBox10";
-            this.checkBox10.Size = new System.Drawing.Size(92, 17);
-            this.checkBox10.TabIndex = 4;
-            this.checkBox10.Text = "CR = CR + LF";
-            this.checkBox10.UseVisualStyleBackColor = true;
+            this.NewLineFormatCkb.AutoSize = true;
+            this.NewLineFormatCkb.Location = new System.Drawing.Point(6, 16);
+            this.NewLineFormatCkb.Name = "NewLineFormatCkb";
+            this.NewLineFormatCkb.Size = new System.Drawing.Size(92, 17);
+            this.NewLineFormatCkb.TabIndex = 4;
+            this.NewLineFormatCkb.Text = "CR = CR + LF";
+            this.NewLineFormatCkb.UseVisualStyleBackColor = true;
+            this.NewLineFormatCkb.CheckedChanged += new System.EventHandler(this.NewLineFormatCkb_CheckedChanged);
             // 
-            // button10
+            // ClearTransmitBtn
             // 
-            this.button10.Location = new System.Drawing.Point(16, 39);
-            this.button10.Margin = new System.Windows.Forms.Padding(0);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(65, 20);
-            this.button10.TabIndex = 1;
-            this.button10.Text = "CLEAR";
-            this.button10.UseVisualStyleBackColor = true;
+            this.ClearTransmitBtn.Location = new System.Drawing.Point(16, 39);
+            this.ClearTransmitBtn.Margin = new System.Windows.Forms.Padding(0);
+            this.ClearTransmitBtn.Name = "ClearTransmitBtn";
+            this.ClearTransmitBtn.Size = new System.Drawing.Size(65, 20);
+            this.ClearTransmitBtn.TabIndex = 1;
+            this.ClearTransmitBtn.Text = "CLEAR";
+            this.ClearTransmitBtn.UseVisualStyleBackColor = true;
+            this.ClearTransmitBtn.Click += new System.EventHandler(this.ClearTransmitBtn_Click);
             // 
             // checkBox12
             // 
@@ -610,10 +625,11 @@
             "1.5",
             "2"});
             this.StopbitCb.Location = new System.Drawing.Point(6, 19);
-            this.StopbitCb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.StopbitCb.Margin = new System.Windows.Forms.Padding(2);
             this.StopbitCb.Name = "StopbitCb";
             this.StopbitCb.Size = new System.Drawing.Size(50, 21);
             this.StopbitCb.TabIndex = 20;
+            this.StopbitCb.SelectedIndexChanged += new System.EventHandler(this.StopbitCb_SelectedIndexChanged);
             // 
             // databitsCb
             // 
@@ -629,14 +645,14 @@
             // 
             this.DatabitCb.FormattingEnabled = true;
             this.DatabitCb.Location = new System.Drawing.Point(4, 19);
-            this.DatabitCb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DatabitCb.Margin = new System.Windows.Forms.Padding(2);
             this.DatabitCb.Name = "DatabitCb";
             this.DatabitCb.Size = new System.Drawing.Size(50, 21);
             this.DatabitCb.TabIndex = 19;
+            this.DatabitCb.SelectionChangeCommitted += new System.EventHandler(this.DatabitCb_SelectionChangeCommitted);
             // 
             // connectBtn
             // 
-            this.connectBtn.Enabled = false;
             this.connectBtn.Location = new System.Drawing.Point(6, 41);
             this.connectBtn.Margin = new System.Windows.Forms.Padding(0);
             this.connectBtn.Name = "connectBtn";
@@ -644,6 +660,7 @@
             this.connectBtn.TabIndex = 0;
             this.connectBtn.Text = "Connect";
             this.connectBtn.UseVisualStyleBackColor = true;
+            this.connectBtn.Click += new System.EventHandler(this.ConnectBtn_Click);
             // 
             // comPortCb
             // 
@@ -670,7 +687,7 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.checkBox1);
+            this.groupBox2.Controls.Add(this.EchoChkb);
             this.groupBox2.Controls.Add(this.button8);
             this.groupBox2.Controls.Add(this.checkBox11);
             this.groupBox2.Controls.Add(this.checkBox12);
@@ -679,21 +696,22 @@
             this.groupBox2.Location = new System.Drawing.Point(561, 75);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox2.Size = new System.Drawing.Size(233, 59);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Misc.";
             // 
-            // checkBox1
+            // EchoChkb
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(86, 37);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(87, 17);
-            this.checkBox1.TabIndex = 7;
-            this.checkBox1.Text = "Enable Echo";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.EchoChkb.AutoSize = true;
+            this.EchoChkb.Location = new System.Drawing.Point(86, 37);
+            this.EchoChkb.Name = "EchoChkb";
+            this.EchoChkb.Size = new System.Drawing.Size(87, 17);
+            this.EchoChkb.TabIndex = 7;
+            this.EchoChkb.Text = "Enable Echo";
+            this.EchoChkb.UseVisualStyleBackColor = true;
+            this.EchoChkb.CheckedChanged += new System.EventHandler(this.EchoChkb_CheckedChanged);
             // 
             // splitContainer1
             // 
@@ -714,7 +732,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.sendBtn);
             this.splitContainer1.Panel2.Controls.Add(this.rawDataTb);
             this.splitContainer1.Size = new System.Drawing.Size(797, 556);
-            this.splitContainer1.SplitterDistance = 465;
+            this.splitContainer1.SplitterDistance = 464;
             this.splitContainer1.TabIndex = 20;
             // 
             // sendBtn
@@ -723,10 +741,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sendBtn.Location = new System.Drawing.Point(737, 3);
             this.sendBtn.Name = "sendBtn";
-            this.sendBtn.Size = new System.Drawing.Size(58, 80);
+            this.sendBtn.Size = new System.Drawing.Size(58, 81);
             this.sendBtn.TabIndex = 1;
             this.sendBtn.Text = "Send";
             this.sendBtn.UseVisualStyleBackColor = true;
+            this.sendBtn.Click += new System.EventHandler(this.SendBtn_Click);
             // 
             // rawDataTb
             // 
@@ -736,7 +755,7 @@
             this.rawDataTb.Location = new System.Drawing.Point(0, 3);
             this.rawDataTb.Multiline = true;
             this.rawDataTb.Name = "rawDataTb";
-            this.rawDataTb.Size = new System.Drawing.Size(736, 79);
+            this.rawDataTb.Size = new System.Drawing.Size(736, 80);
             this.rawDataTb.TabIndex = 0;
             // 
             // MainTerminal
@@ -760,7 +779,7 @@
             this.Controls.Add(this.baudrateGb);
             this.Controls.Add(this.groupBox1);
             this.Name = "MainTerminal";
-            this.Text = "spo";
+            this.Text = "Terminal.NET - By Ex3";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.baudrateGb.ResumeLayout(false);
@@ -801,23 +820,23 @@
         private System.Windows.Forms.CheckBox checkBox7;
         private System.Windows.Forms.CheckBox checkBox6;
         private System.Windows.Forms.TextBox customBrTb;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox LogStreamChb;
+        private System.Windows.Forms.CheckBox CrAsLFChb;
+        private System.Windows.Forms.CheckBox AppendTimeChb;
+        private System.Windows.Forms.CheckBox AutoDisconnectChb;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.RadioButton RcvHexRb;
-        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button ClearRcvBtn;
         private System.Windows.Forms.RadioButton RcvAsciiRb;
         private System.Windows.Forms.TextBox receivedTb;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.CheckBox checkBox12;
         private System.Windows.Forms.CheckBox checkBox11;
-        private System.Windows.Forms.CheckBox checkBox10;
+        private System.Windows.Forms.CheckBox NewLineFormatCkb;
         private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button ClearTransmitBtn;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Button button19;
         private System.Windows.Forms.Button button20;
@@ -847,7 +866,7 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button sendBtn;
         private System.Windows.Forms.TextBox rawDataTb;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox EchoChkb;
     }
 }
 
